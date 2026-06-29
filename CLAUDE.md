@@ -163,7 +163,17 @@ Before every push: `git pull` first.
 
 ## Session History
 
-### 2026-06-29 — claude-sonnet-4-6
+### 2026-06-29 — claude-sonnet-4-6 (Signal)
+- Playability traffic lights: 🟢 Plays today / 🟡 Another way / 🔴 Needs original kit
+- Backward compatibility matrix in Gemini prompt: Xbox 360→Series X/One (green), PS3→red, Wii→Wii U (green), GBA→DS Lite/3DS (amber), etc.
+- Scope expanded: anything 2013-or-earlier is retro — Xbox 360, PS3, CoD, Guitar Hero all valid
+- Barry's needs-more-photo choice screen: verdict now (stored result, no second API call) vs better photo
+- `needs_photo`/`photo_prompt` fields: Gemini always returns best-effort title/description/price alongside any ask
+- Pricing fixed ecosystem-wide: £3/£7/£15 → £4.95/Earned/£14.95 across all -oids
+- Branch: `claude/retro-oid-setup-f7jhz2`
+- Session named Signal — traffic lights, BC signals, choice screen all route people to the right answer
+
+### 2026-06-29 — claude-sonnet-4-6 (Build)
 - Full build from scratch: index.html, analyze-image.js, chat-barry.js, netlify.toml
 - Characters: RETRO-OID (expert AI), Boot Sale Barry (Kidderminster, car boot legend)
 - Coverage: home computers, consoles, arcade, vintage toys, retro media
