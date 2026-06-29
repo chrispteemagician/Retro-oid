@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Retro-Oid | Boot Sale Barry's Retro Shack — Identify Any Vintage Gaming & Collectibles</title>
+    <meta name="description" content="Upload a photo of any retro gaming, vintage computer, classic toy or collectible. RETRO-OID identifies it instantly. Ask Boot Sale Barry for values. Free. No snobbery.">
+    <meta name="theme-color" content="#6d28d9">
+    <link rel="icon" type="image/jpeg" href="retro-oid.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Outfit', sans-serif; margin: 0; background: #f5f0e8; color: #1a0f2e; }
+        .caveat { font-family: 'Caveat', cursive; }
+
+        /* Header */
+        .header-bg {
+            background: linear-gradient(135deg, #1a0f2e 0%, #2d1b69 50%, #1e0a3c 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .header-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(109,40,217,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(234,88,12,0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        /* Scanline effect on header */
+        .header-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.08) 2px,
+                rgba(0,0,0,0.08) 4px
+            );
+            pointer-events: none;
+        }
+        .pixel-border {
+            border: 2px solid rgba(109,40,217,0.25);
+            border-left: 4px solid #6d28d9;
+        }
+        .pixel-border-orange {
+            border: 2px solid rgba(234,88,12,0.25);
+            border-left: 4px solid #ea580c;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(26,15,46,0.08);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            min-height: 48px;
+            font-weight: 700;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            touch-action: manipulation;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%); color: white; }
+        .btn-primary:hover { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); }
+        .btn-orange { background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); color: white; }
+        .btn-orange:hover { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .btn-outline { background: white; border: 2px solid #6d28d9; color: #5b21b6; }
+        .btn-outline:hover { background: #f5f3ff; }
+        .btn-ghost { background: transparent; color: #6b7280; border: 2px solid #e5e7eb; }
+        .btn-ghost:hover { background: #f9fafb; border-color: #6d28d9; color: #6d28d9; }
+
+        /* Upload box */
+        .upload-box {
+            background: white;
+            border: 3px dashed #c4b5fd;
+            border-radius: 16px;
+            padding: 32px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .upload-box:hover { border-color: #6d28d9; background: #f5f3ff; }
+        .upload-box:active { transform: scale(0.98); }
+
+        /* Tabs */
+        .tab-bar {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid #ede9fe;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 16px 4px;
+            font-weight: 700;
+            font-size: 13px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            min-height: 56px;
+            font-family: 'Outfit', sans-serif;
+            border-bottom: 3px solid transparent;
+            color: #9ca3af;
+            transition: all 0.15s;
+        }
+        .tab-btn.active {
+            color: #5b21b6;
+            border-bottom-color: #6d28d9;
+        }
+        .tab-btn:hover:not(.active) { color: #6d28d9; background: #f5f3ff; }
+
+        /* Mode toggle */
+        .mode-toggle {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: transparent;
+            color: #6b7280;
+        }
+        .mode-btn.active {
+            background: white;
+            color: #5b21b6;
+            box-shadow: 0 2px 8px rgba(109,40,217,0.15);
+        }
+
+        /* Result card */
+        .result-card {
+            background: linear-gradient(135deg, #1a0f2e 0%, #2d1b69 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 24px;
+        }
+        .result-card-barry {
+            background: linear-gradient(135deg, #7c2d12 0%, #c2410c 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        /* Chat */
+        .chat-container { max-height: 420px; overflow-y: auto; scroll-behavior: smooth; }
+        .chat-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        .chat-user {
+            background: linear-gradient(135deg, #6d28d9, #5b21b6);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-barry {
+            background: white;
+            color: #1a0f2e;
+            border: 2px solid #ede9fe;
+            border-bottom-left-radius: 4px;
+        }
+        .chat-typing span { animation: blink 1.4s infinite; display: inline-block; }
+        .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* Tier cards */
+        .tier-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid #ede9fe;
+            transition: all 0.15s;
+            text-align: center;
+        }
+        .tier-card:hover { border-color: #6d28d9; box-shadow: 0 4px 16px rgba(109,40,217,0.15); transform: translateY(-2px); }
+        .tier-card.featured { border-color: #ea580c; }
+        .tier-card.featured:hover { border-color: #c2410c; }
+
+        /* Patreon modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 16px;
+        }
+        .modal-content { background: white; border-radius: 24px; padding: 32px; max-width: 420px; width: 100%; }
+
+        /* Amazon card */
+        .amazon-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #fff8f0;
+            border: 2px solid #fed7aa;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.15s;
+            margin-top: 12px;
+        }
+        .amazon-link:hover { border-color: #ea580c; background: #fff3e8; }
+
+        /* Patreon bar */
+        .patreon-bar {
+            background: linear-gradient(135deg, #ff424d 0%, #e1306c 100%);
+            color: white;
+        }
+
+        /* Spinner */
+        .loading-spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Pixel glow effect on title */
+        @keyframes pixelPulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(167,139,250,0.5), 0 0 20px rgba(167,139,250,0.3); }
+            50% { text-shadow: 0 0 20px rgba(167,139,250,0.8), 0 0 40px rgba(167,139,250,0.5); }
+        }
+        .pixel-glow { animation: pixelPulse 3s ease-in-out infinite; }
+
+        .hidden { display: none !important; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        @media (max-width: 640px) {
+            .card { padding: 20px; }
+            .tab-btn { font-size: 11px; padding: 14px 2px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header-bg">
+    <div class="relative z-10 max-w-2xl mx-auto px-4 py-10 text-center">
+        <div class="text-6xl mb-3">🕹️</div>
+        <h1 class="text-4xl font-black text-white pixel-glow tracking-tight mb-2">RETRO-OID</h1>
+        <p class="text-purple-200 font-semibold text-lg mb-1">Boot Sale Barry's Retro Shack</p>
+        <p class="caveat text-purple-300 text-xl">Identify any retro gaming, vintage computing & classic collectibles</p>
+        <div class="flex flex-wrap justify-center gap-2 mt-4 text-sm">
+            <span class="bg-purple-900 bg-opacity-60 text-purple-200 px-3 py-1 rounded-full">🎮 Gaming Consoles</span>
+            <span class="bg-purple-900 bg-opacity-60 text-purple-200 px-3 py-1 rounded-full">💾 Home Computers</span>
+            <span class="bg-orange-900 bg-opacity-60 text-orange-200 px-3 py-1 rounded-full">🤖 Vintage Toys</span>
+            <span class="bg-purple-900 bg-opacity-60 text-purple-200 px-3 py-1 rounded-full">🃏 Collectibles</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ PATREON BAR ═══ -->
+<div id="patreonBar" class="patreon-bar hidden">
+    <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
+        <div class="text-sm font-semibold">
+            <span id="patreonStatus">Loading...</span>
+        </div>
+        <button onclick="showPatreonModal()" class="btn btn-ghost text-white border-white border-opacity-40 text-xs py-2 px-4" style="min-height:36px;font-size:12px;">Join Retro Village →</button>
+    </div>
+</div>
+
+<!-- ═══ TABS ═══ -->
+<div class="tab-bar max-w-2xl mx-auto">
+    <button class="tab-btn active" onclick="switchTab('identify', this)">🔍 Identify</button>
+    <button class="tab-btn" onclick="switchTab('barry', this)">💬 Ask Barry</button>
+    <button class="tab-btn" onclick="switchTab('village', this)">🏘️ Village</button>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="max-w-2xl mx-auto px-4 py-6">
+
+    <!-- ─── IDENTIFY TAB ─── -->
+    <div id="tab-identify" class="tab-content active">
+
+        <div class="card">
+            <h2 class="text-xl font-black text-gray-900 mb-1">Snap It. Know It.</h2>
+            <p class="text-sm text-gray-500 mb-4">Upload any retro item — RETRO-OID identifies it instantly. Or let Barry give you his market verdict.</p>
+
+            <!-- Mode toggle -->
+            <div class="mode-toggle mb-5">
+                <button class="mode-btn active" id="modeIdentify" onclick="setMode('identify')">🔍 Identify It</button>
+                <button class="mode-btn" id="modeBarry" onclick="setMode('barry')">🛒 Barry's Verdict</button>
+            </div>
+
+            <!-- Upload area -->
+            <div class="upload-box" id="uploadBox" onclick="document.getElementById('fileInput').click()">
+                <div id="uploadPrompt">
+                    <div class="text-5xl mb-3">📸</div>
+                    <p class="font-bold text-gray-700 text-base">Tap to upload a photo</p>
+                    <p class="text-sm text-gray-400 mt-1">or drag and drop here</p>
+                    <p class="text-xs text-gray-400 mt-3">Consoles · Computers · Toys · Games · Cartridges</p>
+                </div>
+                <div id="previewContainer" class="hidden w-full">
+                    <img id="previewImg" src="" alt="Preview" class="max-h-48 mx-auto rounded-lg object-contain mb-2">
+                    <p class="text-sm text-gray-500">Tap to change photo</p>
+                </div>
+            </div>
+
+            <input type="file" id="fileInput" accept="image/*" capture="environment" class="hidden">
+
+            <button
+                id="analyseBtn"
+                onclick="analyseImage()"
+                class="btn btn-primary w-full mt-4 text-base hidden"
+                style="min-height:52px;">
+                🔍 <span id="analyseBtnText">Identify It</span>
+            </button>
+        </div>
+
+        <!-- Results -->
+        <div id="resultSection" class="hidden">
+            <div id="resultCard" class="result-card mb-4">
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <h3 id="resultTitle" class="text-xl font-black text-white leading-tight"></h3>
+                    <span id="resultPrice" class="text-right text-sm font-bold bg-white bg-opacity-20 rounded-lg px-3 py-2 whitespace-nowrap flex-shrink-0 hidden"></span>
+                </div>
+                <p id="resultDesc" class="text-purple-100 text-sm leading-relaxed whitespace-pre-line"></p>
+            </div>
+
+            <!-- Amazon link -->
+            <div id="amazonSection" class="hidden">
+                <a id="amazonLink" href="#" target="_blank" rel="noopener nofollow" class="amazon-link">
+                    <span class="text-2xl">🛍️</span>
+                    <div>
+                        <p class="font-bold text-sm text-gray-800" id="amazonText">Find related items on Amazon</p>
+                        <p class="text-xs text-gray-500">Retro gaming, accessories & collectibles</p>
+                    </div>
+                    <span class="ml-auto text-orange-500">→</span>
+                </a>
+            </div>
+
+            <button onclick="resetIdentify()" class="btn btn-ghost w-full mt-3">Try another item →</button>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingSection" class="hidden">
+            <div class="card text-center py-12">
+                <div class="loading-spinner text-4xl mb-4 inline-block">🕹️</div>
+                <p id="loadingText" class="font-bold text-gray-700 text-lg">RETRO-OID is loading...</p>
+                <p class="text-gray-400 text-sm mt-1">Searching the archive...</p>
+            </div>
+        </div>
+
+        <!-- Quick guide -->
+        <div class="card">
+            <h3 class="font-black text-gray-900 mb-3">What Can I Identify?</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="pixel-border rounded-lg p-3 bg-purple-50">
+                    <p class="font-bold text-purple-800 text-sm">🎮 Gaming</p>
+                    <p class="text-xs text-gray-600 mt-1">Consoles, cartridges, handhelds, arcade PCBs</p>
+                </div>
+                <div class="pixel-border rounded-lg p-3 bg-purple-50">
+                    <p class="font-bold text-purple-800 text-sm">💾 Computers</p>
+                    <p class="text-xs text-gray-600 mt-1">ZX Spectrum, BBC Micro, C64, Amiga, Atari ST</p>
+                </div>
+                <div class="pixel-border-orange rounded-lg p-3 bg-orange-50">
+                    <p class="font-bold text-orange-800 text-sm">🤖 Toys</p>
+                    <p class="text-xs text-gray-600 mt-1">Star Wars, He-Man, Transformers G1, TMNT</p>
+                </div>
+                <div class="pixel-border-orange rounded-lg p-3 bg-orange-50">
+                    <p class="font-bold text-orange-800 text-sm">📚 Media</p>
+                    <p class="text-xs text-gray-600 mt-1">Retro magazines, comics, cassettes, floppy disks</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="card">
+            <h3 class="font-black text-gray-900 mb-3">📸 Best Photo Tips</h3>
+            <div class="space-y-2 text-sm text-gray-600">
+                <div class="flex gap-2"><span class="text-green-500">✓</span> Good natural or artificial light — no flash glare</div>
+                <div class="flex gap-2"><span class="text-green-500">✓</span> Include any labels, serial numbers or cartridge labels</div>
+                <div class="flex gap-2"><span class="text-green-500">✓</span> Show the full item — not just a corner</div>
+                <div class="flex gap-2"><span class="text-green-500">✓</span> Multiple items? Identify them one at a time for best results</div>
+                <div class="flex gap-2"><span class="text-orange-500">→</span> Ask Barry about value after RETRO-OID identifies it</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ─── ASK BARRY TAB ─── -->
+    <div id="tab-barry" class="tab-content">
+
+        <!-- Barry intro card -->
+        <div class="card" style="background: linear-gradient(135deg, #7c2d12 0%, #c2410c 100%); color: white;">
+            <div class="flex gap-4 items-start">
+                <div class="text-5xl flex-shrink-0">🛒</div>
+                <div>
+                    <h2 class="text-xl font-black mb-1">Boot Sale Barry</h2>
+                    <p class="text-orange-100 text-sm leading-relaxed">Barry Pemberton, 58, from Kidderminster. Been doing car boots since 1984. Knows the value of everything retro. Straight-talking, no fluff, proper West Midlands.</p>
+                    <p class="caveat text-orange-200 text-lg mt-2">"It's not tat, it's heritage."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat window -->
+        <div class="card" style="padding-bottom: 16px;">
+            <div id="chatMessages" class="chat-container mb-4">
+                <div class="chat-barry chat-bubble">
+                    <p>Alright bab! Barry here. Ask me anything about retro gaming, vintage computers, classic toys — values, what to look for, fakes, repairs. I've been doing this forty years and I've seen pretty much everything pass through.</p>
+                    <p class="mt-2">What have you got?</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <input
+                    type="text"
+                    id="chatInput"
+                    placeholder="Ask Barry anything..."
+                    class="flex-1 px-4 py-3 border-2 border-purple-200 rounded-xl font-medium text-sm focus:outline-none focus:border-purple-500"
+                    onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); sendMessage(); }"
+                    style="min-height: 48px;">
+                <button onclick="sendMessage()" class="btn btn-orange" style="min-height:48px; padding: 0 20px;">
+                    <span id="sendBtnContent">Send</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Suggested questions -->
+        <div class="card">
+            <h3 class="font-black text-gray-900 mb-3 text-sm uppercase tracking-wide">Ask Barry About...</h3>
+            <div class="space-y-2">
+                <button onclick="askBarrySuggestion('What\'s my ZX Spectrum worth?')" class="w-full text-left px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-xl text-sm font-semibold text-purple-800 transition-colors">
+                    💾 What's my ZX Spectrum worth?
+                </button>
+                <button onclick="askBarrySuggestion('How do I spot a fake Transformers G1?')" class="w-full text-left px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-xl text-sm font-semibold text-purple-800 transition-colors">
+                    🤖 How do I spot a fake Transformers G1?
+                </button>
+                <button onclick="askBarrySuggestion('What Mega Drive games are worth selling?')" class="w-full text-left px-4 py-3 bg-orange-50 hover:bg-orange-100 rounded-xl text-sm font-semibold text-orange-800 transition-colors">
+                    🎮 What Mega Drive games are worth selling?
+                </button>
+                <button onclick="askBarrySuggestion('Where are the best car boot sales in the UK?')" class="w-full text-left px-4 py-3 bg-orange-50 hover:bg-orange-100 rounded-xl text-sm font-semibold text-orange-800 transition-colors">
+                    🗺️ Where are the best car boot sales in the UK?
+                </button>
+                <button onclick="askBarrySuggestion('My Amiga 500 has a green screen. Can it be fixed?')" class="w-full text-left px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-xl text-sm font-semibold text-purple-800 transition-colors">
+                    🔧 My Amiga 500 has a green screen. Can it be fixed?
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ─── VILLAGE TAB ─── -->
+    <div id="tab-village" class="tab-content">
+
+        <!-- Village intro -->
+        <div class="card" style="background: linear-gradient(135deg, #1a0f2e 0%, #2d1b69 100%); color: white;">
+            <div class="text-4xl mb-3">🏘️</div>
+            <h2 class="text-2xl font-black mb-2">The Retro Village</h2>
+            <p class="text-purple-200 text-sm leading-relaxed">A community for people who find joy in the things they grew up with — or things they wish they had. No snobbery. ZX81 or PlayStation, your childhood matters.</p>
+            <p class="caveat text-purple-300 text-xl mt-3">Part of the FeelFamous ecosystem</p>
+        </div>
+
+        <!-- Membership tiers -->
+        <div class="card">
+            <h3 class="font-black text-gray-900 text-xl mb-1">Join the Village</h3>
+            <p class="text-sm text-gray-500 mb-4">This is coffeeware. Pay what you can, when you can. Can't right now? Use it anyway — then tell one person.</p>
+
+            <div class="space-y-3">
+
+                <div class="tier-card">
+                    <div class="text-3xl mb-2">🏡</div>
+                    <h4 class="font-black text-gray-900 text-lg">Villager</h4>
+                    <p class="text-3xl font-black text-purple-700 my-2">£4.95<span class="text-base font-semibold text-gray-400">/mo</span></p>
+                    <p class="text-sm text-gray-600 mb-3">The village is free to visit. £4.95 gets you a seat inside it.</p>
+                    <ul class="text-sm text-left space-y-1 text-gray-600 mb-4">
+                        <li>✓ Member listing in the Village directory</li>
+                        <li>✓ 2 guest passes/mo to gift a friend</li>
+                        <li>✓ Monthly draw entry (win retro prizes)</li>
+                        <li>✓ Named in the Roll of Honour</li>
+                    </ul>
+                    <a href="https://www.patreon.com/chrisptee" target="_blank" rel="noopener" class="btn btn-outline w-full" style="min-height:44px;font-size:14px;">Join on Patreon →</a>
+                </div>
+
+                <div class="tier-card featured">
+                    <div class="text-3xl mb-2">⚔️</div>
+                    <h4 class="font-black text-gray-900 text-lg">Elder</h4>
+                    <p class="text-3xl font-black text-orange-600 my-2">Earned</p>
+                    <p class="text-sm text-gray-600 mb-3">You don't buy Elder status. You become it — by staying and being part of why the village is good.</p>
+                    <ul class="text-sm text-left space-y-1 text-gray-600 mb-4">
+                        <li>✓ Everything in Villager</li>
+                        <li>✓ 5 guest passes/mo to gift</li>
+                        <li>✓ Featured in the Elders directory</li>
+                        <li>✓ Named in the village roll</li>
+                    </ul>
+                    <a href="https://www.patreon.com/chrisptee" target="_blank" rel="noopener" class="btn btn-ghost w-full" style="min-height:44px;font-size:14px;border-color:#ea580c;color:#c2410c;">Start as a Villager →</a>
+                </div>
+
+                <div class="tier-card">
+                    <div class="text-3xl mb-2">🏛️</div>
+                    <h4 class="font-black text-gray-900 text-lg">Founder</h4>
+                    <p class="text-3xl font-black text-purple-700 my-2">£14.95<span class="text-base font-semibold text-gray-400">/mo</span></p>
+                    <p class="text-sm text-gray-600 mb-3">Build this with us from the ground floor.</p>
+                    <ul class="text-sm text-left space-y-1 text-gray-600 mb-4">
+                        <li>✓ Everything in Elder</li>
+                        <li>✓ 10 guest passes/mo</li>
+                        <li>✓ Your own Hamlet page + QR</li>
+                        <li>✓ Shape what we build next</li>
+                    </ul>
+                    <a href="https://www.patreon.com/chrisptee" target="_blank" rel="noopener" class="btn btn-primary w-full" style="min-height:44px;font-size:14px;">Become a Founder →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ecosystem card -->
+        <div class="card">
+            <h3 class="font-black text-gray-900 mb-3">The -Oid Ecosystem</h3>
+            <p class="text-sm text-gray-600 mb-4">Retro-Oid is part of a family of free identification tools. Each one is a specialist. Together they cover everything.</p>
+            <div class="space-y-2">
+                <a href="https://radi-oid.co.uk" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors text-sm font-semibold text-amber-900 no-underline">
+                    📻 Radi-Oid — Vintage radios & CB
+                </a>
+                <a href="https://vinyl-oid.co.uk" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors text-sm font-semibold text-purple-900 no-underline">
+                    🎵 Vinyl-Oid — Records & pressings
+                </a>
+                <a href="https://motor-oid.co.uk" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors text-sm font-semibold text-orange-900 no-underline">
+                    🚗 Motor-Oid — UK car marketplace
+                </a>
+                <a href="https://cannabin-oid.co.uk" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors text-sm font-semibold text-green-900 no-underline">
+                    🌿 Cannabin-Oid — Medical cannabis community
+                </a>
+                <a href="https://feelfamous.com" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors text-sm font-semibold text-gray-700 no-underline">
+                    ✨ FeelFamous — The hub
+                </a>
+            </div>
+        </div>
+
+        <!-- About -->
+        <div class="card">
+            <h3 class="font-black text-gray-900 mb-3">About Retro-Oid</h3>
+            <p class="text-sm text-gray-600 leading-relaxed mb-3">Built by Chris P Taylor (T333CPT) — AuDHD, anti-extraction, world domination through kindness. Every -Oid is free. No paywalls on the tools. The village membership is optional.</p>
+            <p class="text-sm text-gray-600 leading-relaxed mb-3">The retro hobby is brilliant for neurodivergent brains: pattern recognition, hyperfocus, completionism. RETRO-OID and Boot Sale Barry are here to help everyone find what they've got and what it's worth — without needing to know a dealer.</p>
+            <p class="caveat text-purple-600 text-xl">"It's not tat, it's heritage." — Barry</p>
+        </div>
+
+        <!-- Patreon login -->
+        <div id="villageLoginPrompt" class="card text-center">
+            <div class="text-4xl mb-3">🔐</div>
+            <h3 class="font-black text-gray-900 mb-2">Already a member?</h3>
+            <p class="text-sm text-gray-500 mb-4">Connect your Patreon to unlock member features.</p>
+            <a href="#" onclick="startPatreonLogin(); return false;" class="btn btn-primary w-full">Connect Patreon →</a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="max-w-2xl mx-auto px-4 pb-8 text-center text-xs text-gray-400">
+    <p>🕹️ Retro-Oid — Part of the <a href="https://feelfamous.com" class="text-purple-600">FeelFamous</a> ecosystem</p>
+    <p class="mt-1">Free forever. MIT licensed. <a href="https://github.com/chrispteemagician/Retro-oid" class="text-purple-600">GitHub</a></p>
+    <p class="mt-1">Amazon links use affiliate tag. Values are estimates — always verify on eBay completed listings.</p>
+</div>
+
+<!-- Patreon modal -->
+<div id="patreonModal" class="modal-overlay hidden" onclick="if(event.target===this)hidePatreonModal()">
+    <div class="modal-content">
+        <button onclick="hidePatreonModal()" class="float-right text-gray-400 hover:text-gray-700 text-2xl font-bold leading-none">×</button>
+        <h3 class="font-black text-gray-900 text-xl mb-1">Join the Retro Village</h3>
+        <p class="text-sm text-gray-500 mb-5">Choose your tier on Patreon — all membership is managed there.</p>
+        <div class="space-y-3">
+            <a href="https://www.patreon.com/chrisptee" target="_blank" rel="noopener" class="flex items-center gap-3 p-4 border-2 border-purple-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all no-underline text-gray-900">
+                <span class="text-2xl">🏡</span>
+                <div class="flex-1">
+                    <p class="font-bold text-base">Villager — £4.95/mo</p>
+                    <p class="text-xs text-gray-500">Village seat, 2 passes, draw entry</p>
+                </div>
+                <span class="text-purple-500">→</span>
+            </a>
+            <div class="flex items-center gap-3 p-4 border-2 border-orange-100 rounded-xl bg-orange-50 text-gray-900">
+                <span class="text-2xl">⚔️</span>
+                <div class="flex-1">
+                    <p class="font-bold text-base">Elder — Earned</p>
+                    <p class="text-xs text-gray-500">Stay and contribute — it finds you</p>
+                </div>
+                <span class="text-orange-400 text-xs font-bold">EARNED</span>
+            </div>
+            <a href="https://www.patreon.com/chrisptee" target="_blank" rel="noopener" class="flex items-center gap-3 p-4 border-2 border-purple-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all no-underline text-gray-900">
+                <span class="text-2xl">🏛️</span>
+                <div class="flex-1">
+                    <p class="font-bold text-base">Founder — £14.95/mo</p>
+                    <p class="text-xs text-gray-500">10 passes, Hamlet page, shape what we build</p>
+                </div>
+                <span class="text-purple-500">→</span>
+            </a>
+        </div>
+        <button onclick="hidePatreonModal()" class="btn btn-ghost w-full mt-4" style="min-height:44px;">Maybe later</button>
+    </div>
+</div>
+
+<script>
+// ─── Tab switching ────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+}
+
+// ─── Mode toggle ──────────────────────────────────────────────────────────────
+let currentMode = 'identify';
+function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('modeIdentify').classList.toggle('active', mode === 'identify');
+    document.getElementById('modeBarry').classList.toggle('active', mode === 'barry');
+
+    if (mode === 'barry') {
+        document.getElementById('analyseBtnText').textContent = "Get Barry's Verdict";
+        document.getElementById('uploadBox').style.borderColor = '#f97316';
+    } else {
+        document.getElementById('analyseBtnText').textContent = "Identify It";
+        document.getElementById('uploadBox').style.borderColor = '';
+    }
+}
+
+// ─── Image handling ───────────────────────────────────────────────────────────
+let imageData = null;
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        imageData = ev.target.result;
+        document.getElementById('previewImg').src = imageData;
+        document.getElementById('uploadPrompt').classList.add('hidden');
+        document.getElementById('previewContainer').classList.remove('hidden');
+        document.getElementById('analyseBtn').classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+});
+
+// Drag and drop
+const uploadBox = document.getElementById('uploadBox');
+uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); uploadBox.style.borderColor = '#6d28d9'; });
+uploadBox.addEventListener('dragleave', () => { uploadBox.style.borderColor = ''; });
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.style.borderColor = '';
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            imageData = ev.target.result;
+            document.getElementById('previewImg').src = imageData;
+            document.getElementById('uploadPrompt').classList.add('hidden');
+            document.getElementById('previewContainer').classList.remove('hidden');
+            document.getElementById('analyseBtn').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// ─── Compress image before sending ───────────────────────────────────────────
+function compressImage(dataUrl, maxWidth = 800, quality = 0.75) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ratio = Math.min(maxWidth / img.width, maxWidth / img.height, 1);
+            canvas.width = img.width * ratio;
+            canvas.height = img.height * ratio;
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = dataUrl;
+    });
+}
+
+// ─── Analyse image ────────────────────────────────────────────────────────────
+async function analyseImage() {
+    if (!imageData) return;
+
+    document.getElementById('resultSection').classList.add('hidden');
+    document.getElementById('loadingSection').classList.remove('hidden');
+    document.getElementById('analyseBtn').disabled = true;
+
+    const loadingMessages = currentMode === 'barry'
+        ? ["Barry's having a look...", "He's checking his price guide...", "Nearly there, bab..."]
+        : ["Searching the archive...", "Cross-referencing models...", "RETRO-OID is thinking..."];
+
+    let msgIdx = 0;
+    const loadingEl = document.getElementById('loadingText');
+    const msgInterval = setInterval(() => {
+        msgIdx = (msgIdx + 1) % loadingMessages.length;
+        loadingEl.textContent = loadingMessages[msgIdx];
+    }, 1800);
+
+    try {
+        const compressed = await compressImage(imageData);
+
+        const res = await fetch('/.netlify/functions/analyze-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: compressed, mode: currentMode })
+        });
+
+        const data = await res.json();
+        clearInterval(msgInterval);
+
+        document.getElementById('loadingSection').classList.add('hidden');
+        document.getElementById('resultSection').classList.remove('hidden');
+
+        // Swap card colour for barry mode
+        const card = document.getElementById('resultCard');
+        if (currentMode === 'barry') {
+            card.className = 'result-card-barry mb-4';
+        } else {
+            card.className = 'result-card mb-4';
+        }
+
+        document.getElementById('resultTitle').textContent = data.title || 'Item Identified';
+
+        // Description — extract and separate AMAZON_SEARCH if present
+        let desc = data.description || '';
+        let amazonSearch = null;
+        const amazonMatch = desc.match(/\nAMAZON_SEARCH:\s*(.+)$/);
+        if (amazonMatch) {
+            amazonSearch = amazonMatch[1].trim();
+            desc = desc.replace(/\nAMAZON_SEARCH:\s*.+$/, '').trim();
+        }
+
+        document.getElementById('resultDesc').textContent = desc;
+
+        if (data.price) {
+            const priceEl = document.getElementById('resultPrice');
+            priceEl.textContent = data.price;
+            priceEl.classList.remove('hidden');
+        } else {
+            document.getElementById('resultPrice').classList.add('hidden');
+        }
+
+        // Amazon link
+        if (amazonSearch && currentMode !== 'barry') {
+            const tag = 'chrdocstrcromh-21';
+            const url = `https://www.amazon.co.uk/s?k=${encodeURIComponent(amazonSearch)}&tag=${tag}`;
+            document.getElementById('amazonLink').href = url;
+            document.getElementById('amazonText').textContent = `Search Amazon: "${amazonSearch}"`;
+            document.getElementById('amazonSection').classList.remove('hidden');
+        } else {
+            document.getElementById('amazonSection').classList.add('hidden');
+        }
+
+    } catch (err) {
+        clearInterval(msgInterval);
+        document.getElementById('loadingSection').classList.add('hidden');
+        document.getElementById('resultSection').classList.remove('hidden');
+        document.getElementById('resultTitle').textContent = 'Error';
+        document.getElementById('resultDesc').textContent = 'Something went wrong. Please try again.';
+        document.getElementById('resultPrice').classList.add('hidden');
+        document.getElementById('amazonSection').classList.add('hidden');
+    }
+
+    document.getElementById('analyseBtn').disabled = false;
+}
+
+function resetIdentify() {
+    imageData = null;
+    document.getElementById('resultSection').classList.add('hidden');
+    document.getElementById('previewContainer').classList.add('hidden');
+    document.getElementById('uploadPrompt').classList.remove('hidden');
+    document.getElementById('analyseBtn').classList.add('hidden');
+    document.getElementById('fileInput').value = '';
+}
+
+// ─── Chat with Barry ──────────────────────────────────────────────────────────
+let chatHistory = [];
+
+async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendChatMessage(text, 'user');
+    chatHistory.push({ role: 'user', text });
+    input.value = '';
+
+    const sendBtn = document.getElementById('sendBtnContent');
+    sendBtn.textContent = '...';
+
+    appendTyping();
+
+    try {
+        const res = await fetch('/.netlify/functions/chat-barry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: text, history: chatHistory.slice(-20) })
+        });
+        const data = await res.json();
+        removeTyping();
+
+        const answer = data.answer || "Something went wrong, bab. Try again.";
+        chatHistory.push({ role: 'model', text: answer });
+        appendChatMessage(answer, 'barry');
+
+    } catch (err) {
+        removeTyping();
+        appendChatMessage("Something went sideways on my end. Try again in a tick.", 'barry');
+    }
+
+    sendBtn.textContent = 'Send';
+}
+
+function appendChatMessage(text, role) {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `chat-bubble ${role === 'user' ? 'chat-user' : 'chat-barry'}`;
+    div.style.display = 'block';
+    div.style.width = 'fit-content';
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function appendTyping() {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.id = 'typingIndicator';
+    div.className = 'chat-barry chat-bubble chat-typing';
+    div.style.display = 'block';
+    div.style.width = 'fit-content';
+    div.innerHTML = '<span>●</span><span>●</span><span>●</span>';
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function removeTyping() {
+    const el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+}
+
+function askBarrySuggestion(text) {
+    switchTab('barry', document.querySelectorAll('.tab-btn')[1]);
+    document.getElementById('chatInput').value = text;
+    sendMessage();
+}
+
+// ─── Patreon modal ────────────────────────────────────────────────────────────
+function showPatreonModal() { document.getElementById('patreonModal').classList.remove('hidden'); }
+function hidePatreonModal() { document.getElementById('patreonModal').classList.add('hidden'); }
+
+// ─── Patreon auth ─────────────────────────────────────────────────────────────
+const PATREON_CLIENT_ID = 'YOUR_PATREON_CLIENT_ID';
+const PATREON_REDIRECT_URI = 'https://retro-oid.netlify.app/';
+
+function startPatreonLogin() {
+    const state = Math.random().toString(36).slice(2);
+    sessionStorage.setItem('patreon_state', state);
+    const url = `https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${PATREON_CLIENT_ID}&redirect_uri=${encodeURIComponent(PATREON_REDIRECT_URI)}&scope=identity%20identity.memberships&state=${state}`;
+    window.location.href = url;
+}
+
+async function checkPatreonCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+
+    if (!code) {
+        const stored = localStorage.getItem('patreon_session');
+        if (stored) {
+            try {
+                const session = JSON.parse(stored);
+                if (session.expires > Date.now()) {
+                    showPatreonStatus(session.tier);
+                    return;
+                }
+            } catch (_) {}
+        }
+        return;
+    }
+
+    if (state !== sessionStorage.getItem('patreon_state')) return;
+    history.replaceState({}, '', window.location.pathname);
+
+    try {
+        const res = await fetch(`/.netlify/functions/patreon-auth?code=${code}`);
+        const data = await res.json();
+
+        if (data.isPro && data.tier) {
+            localStorage.setItem('patreon_session', JSON.stringify({
+                tier: data.tier,
+                expires: Date.now() + 24 * 60 * 60 * 1000
+            }));
+            showPatreonStatus(data.tier);
+        }
+    } catch (_) {}
+}
+
+function showPatreonStatus(tier) {
+    const bar = document.getElementById('patreonBar');
+    const status = document.getElementById('patreonStatus');
+    const loginPrompt = document.getElementById('villageLoginPrompt');
+
+    const labels = { villager: '🏡 Villager', elder: '⚔️ Elder', founder: '🏛️ Founder' };
+    status.textContent = `Welcome back, ${labels[tier] || 'Member'}!`;
+    bar.classList.remove('hidden');
+    if (loginPrompt) loginPrompt.classList.add('hidden');
+}
+
+// Init
+checkPatreonCallback();
+</script>
+</body>
+</html>
