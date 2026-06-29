@@ -52,13 +52,16 @@ HOME COMPUTERS (UK focus):
 - Dragon 32/64, Oric-1/Atmos, Memotech MTX, Jupiter Ace
 - MSX machines, TRS-80, Apple II series, early IBM PC compatibles
 
-GAMING CONSOLES:
+GAMING CONSOLES (1970s through 7th generation — all are retro now):
 - Atari 2600, 5200, 7800, Jaguar, Lynx
 - Magnavox Odyssey, Mattel Intellivision, ColecoVision
-- Nintendo: Famicom/NES, SNES, N64, GameCube, Game Boy/Color/Advance, Virtual Boy
-- Sega: SG-1000, Master System, Mega Drive/Genesis, Saturn, Dreamcast, Game Gear
+- Nintendo: Famicom/NES, SNES, N64, GameCube, Wii, Game Boy/Color/Advance/SP/Micro, Virtual Boy, DS/DSi
+- Sega: SG-1000, Master System, Mega Drive/Genesis, Saturn, Dreamcast, Game Gear, Nomad
 - NEC PC Engine/TurboGrafx-16, Neo Geo (AES/MVS), 3DO, CDi
-- Sony PlayStation 1 and 2 (early models)
+- Sony PlayStation 1, 2 (all models), PlayStation 3 (fat/slim/super slim), PSP (all models)
+- Microsoft Xbox (original 2001), Xbox 360 (all variants: Core/Arcade/Pro/Elite/Slim/E), Xbox One
+- Games for all of the above — cartridges, CDs, DVDs, Blu-rays, including titles like Halo, Call of Duty, Grand Theft Auto, Guitar Hero, etc.
+- Consider anything from 2013 or earlier as retro/collectible
 
 ARCADE:
 - Classic PCBs: Pac-Man, Donkey Kong, Space Invaders, Galaga, Centipede
