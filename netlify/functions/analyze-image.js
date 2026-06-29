@@ -92,15 +92,19 @@ RETRO MEDIA:
 - Comics: 2000 AD, Beano, Dandy, Tiger, Roy of the Rovers, Look-in
 - Vintage TV tie-in toys and merchandise
 
-BACKWARD COMPATIBILITY (always mention when relevant to collector value):
-- Xbox 360 games: large library backward compatible with Xbox One and Xbox Series X/S — playable today without original hardware, which keeps demand alive but suppresses scarcity value for common titles
-- Xbox Original (2001) games: select titles work on Xbox 360; even fewer on Xbox One/Series via backward compatibility
-- PS3: NOT backward compatible with PS4 or PS5 (except via PS Now/PS Plus streaming) — physical PS3 discs require original PS3 hardware, which increases hardware demand
-- PS2/PS1: some PS3 fat models play PS2 discs (CECHL/early launch); PS5 does not play PS3/PS2/PS1 discs
-- Wii: Wii U plays Wii discs (backward compatible); Wii plays GameCube discs (early models only)
-- GameCube: playable on early Wii models; not on Wii U
-- Nintendo DS: playable on 3DS; GBA carts NOT playable on DS Lite slot 2 is GBA-compatible
-- When a title is backward compatible with current hardware, note it as it affects who will buy it and why
+BACKWARD COMPATIBILITY — the core question people are asking is: will this play on something I own?
+- Xbox 360 games: most are backward compatible with Xbox One and Xbox Series X/S — GREEN, plays today
+- Xbox Original (2001): select titles work on Xbox 360 and a few on Series via BC — AMBER, another way
+- PS3 games: NOT backward compatible with PS4/PS5 — disc requires original PS3 hardware — RED, needs original kit
+- PS2/PS1 discs: require original PS2/PS1, OR a fat launch PS3 (CECHA/B) — AMBER at best, RED for most
+- PS5: plays PS4 discs natively; does NOT play PS3/PS2/PS1 discs — PS4 games are GREEN
+- Wii games: Wii U plays them natively — GREEN
+- GameCube discs: only on original GameCube or early Wii (not Wii U) — RED, needs original kit
+- GBA cartridges: play on GBA SP, DS (original/Lite slot 2), 3DS via adapter — AMBER, another way
+- DS cartridges: play on 3DS natively — GREEN
+- Sega Mega Drive/Master System/Saturn/Dreamcast cartridges and discs: no official modern BC — RED
+- NES/SNES/N64 cartridges: no official modern BC — RED (Nintendo Switch Online is streaming only)
+- Atari, Spectrum, Amiga, C64 hardware and media: original hardware only — RED
 
 KNOWLEDGE BASE:
 - Market values in GBP (boxed vs unboxed, working vs untested, PAL vs NTSC)
@@ -110,6 +114,13 @@ KNOWLEDGE BASE:
 - Cassette, cartridge, disk format identification
 - Special editions, limited releases, export versions
 
+WHEN YOU CANNOT IDENTIFY FROM THIS IMAGE ALONE — return needs_photo: true:
+- If the image shows only a box with no disc/cart/label visible and you cannot confirm the game title
+- If the image is too blurry, dark, or cropped to identify properly
+- If you can see the format (e.g. "PS2 game case") but cannot read the title
+- Be specific in photo_prompt: tell them exactly what would help ("Can I see the disc?" / "Can I see the spine label?" / "Can you get closer to the cartridge label?")
+- Do NOT make up an identification when the image is unclear. Ask first.
+
 Analyze this image and provide:
 
 TITLE: Specific identification (e.g., "Sinclair ZX Spectrum 48K Issue 3", "Sega Mega Drive with Sonic 1 cartridge", "Kenner Star Wars Boba Fett 1979 Vintage")
@@ -117,31 +128,39 @@ TITLE: Specific identification (e.g., "Sinclair ZX Spectrum 48K Issue 3", "Sega 
 DESCRIPTION: Detailed analysis including:
 - Exact make/model/variant/year if identifiable
 - Condition assessment (excellent/good/fair/poor indicators)
-- Notable details: version, region, accessories present/missing
-- Historical significance and context
-- Any faults visible in the image
-- Collector appeal and demand
-
-ESTIMATED VALUE: Market value range in GBP, distinguishing:
-- "As is" value (current condition)
-- "If complete/boxed" value
-- Note key factors that affect the price
+- Whether the disc/cart is visible — if just a box, note that the disc was not shown
+- Backward compatibility: explicitly say what you can play it on TODAY
+- Historical significance and collector context
+- Market value in GBP
 
 End with a line break, then on its own line add:
 AMAZON_SEARCH: [relevant retro gaming or collectibles search term, 2-5 words]
 
-CONDITION RATING — include in every identify response:
-- green: excellent or good condition — minimal wear, working/likely working, complete or near-complete
-- amber: fair condition — visible wear, untested, missing accessories, or known fault visible in image
-- red: poor condition — significant damage, clearly non-working, heavily incomplete, or restoration needed
+PLAYABILITY RATING — the main question: can someone play this today without original hardware?
+- green: plays on widely-available modern hardware (Xbox Series/One BC, Wii U, 3DS, PS5 playing PS4)
+- amber: playable via another route — specific older console, specific hardware revision, or widely-used workaround
+- red: original hardware only — no official modern play path
 
 Format response as JSON:
 {
   "title": "Specific identification",
   "description": "Detailed expert analysis with AMAZON_SEARCH line at end",
   "price": "£XX - £XXX",
-  "condition": "green",
-  "condition_reason": "One short phrase — e.g. Clean example, label intact, no visible damage"
+  "playable": "green",
+  "playable_reason": "Plays on Xbox One and Xbox Series X/S via backward compatibility",
+  "needs_photo": false,
+  "photo_prompt": null
+}
+
+If needs_photo is true, STILL give your best verdict — never leave title/description empty. Return everything plus the flag:
+{
+  "title": "Your best identification from what's visible",
+  "description": "Your best analysis — honest about what you can't see",
+  "price": "£XX - £XXX (uncertain without seeing disc/label/etc)",
+  "playable": "green|amber|red (best guess)",
+  "playable_reason": "reason based on what you can see",
+  "needs_photo": true,
+  "photo_prompt": "Exactly what would help — e.g. 'Can I see the disc? Scratches affect the value.'"
 }`;
 
     const barryPrompt = `You are BOOT SALE BARRY, the legendary retro expert who has been doing car boot sales since 1984. You're 58, from Kidderminster in the West Midlands, and you know the value of every piece of retro gaming, vintage computing, and classic toy ever made.
@@ -269,8 +288,10 @@ FORMAT as JSON:
             title: parsed.title || 'Item Identified',
             description: parsed.description || text,
             price: parsed.price || null,
-            condition: parsed.condition || null,
-            condition_reason: parsed.condition_reason || null
+            playable: parsed.playable || null,
+            playable_reason: parsed.playable_reason || null,
+            needs_photo: parsed.needs_photo || false,
+            photo_prompt: parsed.photo_prompt || null
           })
         };
       } catch (e) {

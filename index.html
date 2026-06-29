@@ -176,6 +176,32 @@
             padding: 24px;
         }
 
+        /* Needs-more-photo choice screen */
+        .needs-photo-card {
+            background: linear-gradient(135deg, #2d1b69 0%, #1a0f2e 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 24px;
+            border: 2px solid rgba(109,40,217,0.5);
+        }
+        .choice-btn {
+            width: 100%; padding: 18px 16px; border-radius: 14px;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            line-height: 1.3; text-align: center; transition: opacity 0.15s;
+            font-family: 'Outfit', sans-serif;
+        }
+        .choice-btn:active { opacity: 0.8; }
+        .choice-btn-primary {
+            background: rgba(109,40,217,0.4);
+            border: 2px solid rgba(109,40,217,0.9);
+            color: white;
+        }
+        .choice-btn-secondary {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.75);
+        }
+
         /* Traffic light badge */
         .tl-badge {
             display: inline-flex; align-items: center; gap: 5px;
@@ -366,9 +392,9 @@
                     <h3 id="resultTitle" class="text-xl font-black text-white leading-tight"></h3>
                     <span id="resultPrice" class="text-right text-sm font-bold bg-white bg-opacity-20 rounded-lg px-3 py-2 whitespace-nowrap flex-shrink-0 hidden"></span>
                 </div>
-                <div id="conditionBadgeRow" class="hidden mb-3">
-                    <span id="conditionBadge" class="tl-badge"></span>
-                    <span id="conditionReason" class="text-xs text-purple-200 ml-2"></span>
+                <div id="playBadgeRow" class="hidden mb-3">
+                    <span id="playBadge" class="tl-badge"></span>
+                    <span id="playReason" class="text-xs text-purple-200 ml-2"></span>
                 </div>
                 <p id="resultDesc" class="text-purple-100 text-sm leading-relaxed whitespace-pre-line"></p>
             </div>
@@ -386,6 +412,23 @@
             </div>
 
             <button onclick="resetIdentify()" class="btn btn-ghost w-full mt-3">Try another item →</button>
+        </div>
+
+        <!-- Needs more photo — choice screen -->
+        <div id="needsPhotoSection" class="hidden">
+            <div class="needs-photo-card mb-4" style="text-align:center;">
+                <div style="font-size:2.5rem;margin-bottom:12px;">📸</div>
+                <p id="photoPromptText" class="font-bold text-white text-base leading-snug mb-1"></p>
+                <p class="text-purple-300 text-sm mb-6">Or go with what I've got — your call.</p>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                    <button onclick="continueWithPhoto()" class="choice-btn choice-btn-primary">
+                        🎯 Give me your verdict now
+                    </button>
+                    <button onclick="resetIdentify()" class="choice-btn choice-btn-secondary">
+                        📷 Let me get a better photo
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Loading state -->
@@ -669,6 +712,7 @@ function setMode(mode) {
 
 // ─── Image handling ───────────────────────────────────────────────────────────
 let imageData = null;
+let pendingResult = null;
 
 document.getElementById('fileInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -754,60 +798,14 @@ async function analyseImage() {
         clearInterval(msgInterval);
 
         document.getElementById('loadingSection').classList.add('hidden');
-        document.getElementById('resultSection').classList.remove('hidden');
 
-        // Swap card colour for barry mode
-        const card = document.getElementById('resultCard');
-        if (currentMode === 'barry') {
-            card.className = 'result-card-barry mb-4';
+        if (data.needs_photo && data.photo_prompt) {
+            pendingResult = data;
+            document.getElementById('needsPhotoSection').classList.remove('hidden');
+            document.getElementById('photoPromptText').textContent = data.photo_prompt;
         } else {
-            card.className = 'result-card mb-4';
-        }
-
-        document.getElementById('resultTitle').textContent = data.title || 'Item Identified';
-
-        // Traffic light condition badge (identify mode only)
-        const badgeRow = document.getElementById('conditionBadgeRow');
-        const badge = document.getElementById('conditionBadge');
-        const reasonEl = document.getElementById('conditionReason');
-        if (currentMode !== 'barry' && data.condition) {
-            const tlLabels = { green: '🟢 Good condition', amber: '🟡 Fair condition', red: '🔴 Poor condition' };
-            badge.textContent = tlLabels[data.condition] || data.condition;
-            badge.className = 'tl-badge tl-' + data.condition;
-            reasonEl.textContent = data.condition_reason || '';
-            badgeRow.classList.remove('hidden');
-        } else {
-            badgeRow.classList.add('hidden');
-        }
-
-        // Description — extract and separate AMAZON_SEARCH if present
-        let desc = data.description || '';
-        let amazonSearch = null;
-        const amazonMatch = desc.match(/\nAMAZON_SEARCH:\s*(.+)$/);
-        if (amazonMatch) {
-            amazonSearch = amazonMatch[1].trim();
-            desc = desc.replace(/\nAMAZON_SEARCH:\s*.+$/, '').trim();
-        }
-
-        document.getElementById('resultDesc').textContent = desc;
-
-        if (data.price) {
-            const priceEl = document.getElementById('resultPrice');
-            priceEl.textContent = data.price;
-            priceEl.classList.remove('hidden');
-        } else {
-            document.getElementById('resultPrice').classList.add('hidden');
-        }
-
-        // Amazon link
-        if (amazonSearch && currentMode !== 'barry') {
-            const tag = 'chrdocstrcromh-21';
-            const url = `https://www.amazon.co.uk/s?k=${encodeURIComponent(amazonSearch)}&tag=${tag}`;
-            document.getElementById('amazonLink').href = url;
-            document.getElementById('amazonText').textContent = `Search Amazon: "${amazonSearch}"`;
-            document.getElementById('amazonSection').classList.remove('hidden');
-        } else {
-            document.getElementById('amazonSection').classList.add('hidden');
+            document.getElementById('resultSection').classList.remove('hidden');
+            displayResult(data);
         }
 
     } catch (err) {
@@ -823,9 +821,71 @@ async function analyseImage() {
     document.getElementById('analyseBtn').disabled = false;
 }
 
+function displayResult(data) {
+    // Swap card colour for barry mode
+    const card = document.getElementById('resultCard');
+    card.className = currentMode === 'barry' ? 'result-card-barry mb-4' : 'result-card mb-4';
+
+    document.getElementById('resultTitle').textContent = data.title || 'Item Identified';
+
+    // Playability traffic light badge
+    const badgeRow = document.getElementById('playBadgeRow');
+    const badge = document.getElementById('playBadge');
+    const reasonEl = document.getElementById('playReason');
+    if (data.playable) {
+        const tlLabels = { green: '🟢 Plays today', amber: '🟡 Another way', red: '🔴 Needs original kit' };
+        badge.textContent = tlLabels[data.playable] || data.playable;
+        badge.className = 'tl-badge tl-' + data.playable;
+        reasonEl.textContent = data.playable_reason || '';
+        badgeRow.classList.remove('hidden');
+    } else {
+        badgeRow.classList.add('hidden');
+    }
+
+    // Description — extract and separate AMAZON_SEARCH if present
+    let desc = data.description || '';
+    let amazonSearch = null;
+    const amazonMatch = desc.match(/\nAMAZON_SEARCH:\s*(.+)$/);
+    if (amazonMatch) {
+        amazonSearch = amazonMatch[1].trim();
+        desc = desc.replace(/\nAMAZON_SEARCH:\s*.+$/, '').trim();
+    }
+
+    document.getElementById('resultDesc').textContent = desc;
+
+    if (data.price) {
+        const priceEl = document.getElementById('resultPrice');
+        priceEl.textContent = data.price;
+        priceEl.classList.remove('hidden');
+    } else {
+        document.getElementById('resultPrice').classList.add('hidden');
+    }
+
+    // Amazon link
+    if (amazonSearch && currentMode !== 'barry') {
+        const tag = 'chrdocstrcromh-21';
+        const url = `https://www.amazon.co.uk/s?k=${encodeURIComponent(amazonSearch)}&tag=${tag}`;
+        document.getElementById('amazonLink').href = url;
+        document.getElementById('amazonText').textContent = `Search Amazon: "${amazonSearch}"`;
+        document.getElementById('amazonSection').classList.remove('hidden');
+    } else {
+        document.getElementById('amazonSection').classList.add('hidden');
+    }
+}
+
+function continueWithPhoto() {
+    if (!pendingResult) return;
+    document.getElementById('needsPhotoSection').classList.add('hidden');
+    document.getElementById('resultSection').classList.remove('hidden');
+    displayResult(pendingResult);
+    pendingResult = null;
+}
+
 function resetIdentify() {
     imageData = null;
+    pendingResult = null;
     document.getElementById('resultSection').classList.add('hidden');
+    document.getElementById('needsPhotoSection').classList.add('hidden');
     document.getElementById('previewContainer').classList.add('hidden');
     document.getElementById('uploadPrompt').classList.remove('hidden');
     document.getElementById('analyseBtn').classList.add('hidden');
