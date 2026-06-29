@@ -113,9 +113,9 @@ Same as all -Oids:
 
 | Tier | Price | Pence threshold |
 |------|-------|-----------------|
-| 🏡 Villager | £3/mo | ≥300¢ |
-| ⚔️ Elder | £7/mo | ≥700¢ |
-| 🏛️ Founder | £15/mo | ≥1500¢ |
+| 🏡 Villager | £4.95/mo | ≥300¢ |
+| ⚔️ Elder | Earned | ≥700¢ |
+| 🏛️ Founder | £14.95/mo | ≥1500¢ |
 
 All Patreon links go to `https://www.patreon.com/chrisptee` — no tier-specific pages yet.
 
