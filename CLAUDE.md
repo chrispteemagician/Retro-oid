@@ -44,7 +44,7 @@ Same as all -Oids:
 ```
 /
 ├── CLAUDE.md               ← you are here
-├── LICENSE                 ← MIT
+├── LICENSE                 ← AGPL v3
 ├── index.html              ← entire app (identify tab, chat tab, village tab)
 ├── netlify.toml            ← Netlify build config
 ├── robots.txt
@@ -98,7 +98,7 @@ Same as all -Oids:
 ## Environment Variables (Netlify)
 
 | Variable | Purpose |
-|----------|---------|
+|----------|--------|
 | `GEMINI_API_KEY` | Google Gemini API (or `GOOGLE_AI_API_KEY` as fallback) |
 | `PATREON_CLIENT_ID` | Patreon OAuth |
 | `PATREON_CLIENT_SECRET` | Patreon OAuth |
@@ -112,7 +112,7 @@ Same as all -Oids:
 ## Membership Tiers (Patreon — chrisptee campaign)
 
 | Tier | Price | Pence threshold |
-|------|-------|-----------------|
+|------|-------|----------------|
 | 🏡 Villager | £4.95/mo | ≥300¢ |
 | ⚔️ Elder | Earned | ≥700¢ |
 | 🏛️ Founder | £14.95/mo | ≥1500¢ |
@@ -163,7 +163,19 @@ Before every push: `git pull` first.
 
 ## Session History
 
-### 2026-06-29 — claude-sonnet-4-6
+### 2026-06-29 — claude-sonnet-4-6 (Signal)
+- Playability traffic lights: 🟢 Plays today / 🟡 Another way / 🔴 Needs original kit
+- Backward compatibility matrix in Gemini prompt: Xbox 360→Series X/One (green), PS3→red, Wii→Wii U (green), GBA→DS Lite/3DS (amber), etc.
+- Scope expanded: anything 2013-or-earlier is retro — Xbox 360, PS3, CoD, Guitar Hero all valid
+- Barry's needs-more-photo choice screen: verdict now (stored result, no second API call) vs better photo
+- `needs_photo`/`photo_prompt` fields: Gemini always returns best-effort title/description/price alongside any ask
+- Pricing fixed ecosystem-wide: £3/£7/£15 → £4.95/Earned/£14.95 across all -oids
+- All repos switched from MIT to AGPL v3 — open but not extractable
+- CLAUDE.md ecosystem rule updated: AGPL v3 on all new -oids
+- Branch: `claude/retro-oid-setup-f7jhz2`
+- Session named Signal — traffic lights, BC signals, choice screen all route people to the right answer
+
+### 2026-06-29 — claude-sonnet-4-6 (Build)
 - Full build from scratch: index.html, analyze-image.js, chat-barry.js, netlify.toml
 - Characters: RETRO-OID (expert AI), Boot Sale Barry (Kidderminster, car boot legend)
 - Coverage: home computers, consoles, arcade, vintage toys, retro media
