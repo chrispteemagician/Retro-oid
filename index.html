@@ -176,6 +176,16 @@
             padding: 24px;
         }
 
+        /* Traffic light badge */
+        .tl-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+        }
+        .tl-green { background: rgba(34,197,94,0.2);  border: 1px solid #22c55e; color: #4ade80; }
+        .tl-amber { background: rgba(251,191,36,0.15); border: 1px solid #fbbf24; color: #fcd34d; }
+        .tl-red   { background: rgba(239,68,68,0.15);  border: 1px solid #ef4444; color: #f87171; }
+
         /* Chat */
         .chat-container { max-height: 420px; overflow-y: auto; scroll-behavior: smooth; }
         .chat-bubble {
@@ -355,6 +365,10 @@
                 <div class="flex items-start justify-between gap-3 mb-3">
                     <h3 id="resultTitle" class="text-xl font-black text-white leading-tight"></h3>
                     <span id="resultPrice" class="text-right text-sm font-bold bg-white bg-opacity-20 rounded-lg px-3 py-2 whitespace-nowrap flex-shrink-0 hidden"></span>
+                </div>
+                <div id="conditionBadgeRow" class="hidden mb-3">
+                    <span id="conditionBadge" class="tl-badge"></span>
+                    <span id="conditionReason" class="text-xs text-purple-200 ml-2"></span>
                 </div>
                 <p id="resultDesc" class="text-purple-100 text-sm leading-relaxed whitespace-pre-line"></p>
             </div>
@@ -751,6 +765,20 @@ async function analyseImage() {
         }
 
         document.getElementById('resultTitle').textContent = data.title || 'Item Identified';
+
+        // Traffic light condition badge (identify mode only)
+        const badgeRow = document.getElementById('conditionBadgeRow');
+        const badge = document.getElementById('conditionBadge');
+        const reasonEl = document.getElementById('conditionReason');
+        if (currentMode !== 'barry' && data.condition) {
+            const tlLabels = { green: '🟢 Good condition', amber: '🟡 Fair condition', red: '🔴 Poor condition' };
+            badge.textContent = tlLabels[data.condition] || data.condition;
+            badge.className = 'tl-badge tl-' + data.condition;
+            reasonEl.textContent = data.condition_reason || '';
+            badgeRow.classList.remove('hidden');
+        } else {
+            badgeRow.classList.add('hidden');
+        }
 
         // Description — extract and separate AMAZON_SEARCH if present
         let desc = data.description || '';

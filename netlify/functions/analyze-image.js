@@ -130,11 +130,18 @@ ESTIMATED VALUE: Market value range in GBP, distinguishing:
 End with a line break, then on its own line add:
 AMAZON_SEARCH: [relevant retro gaming or collectibles search term, 2-5 words]
 
+CONDITION RATING — include in every identify response:
+- green: excellent or good condition — minimal wear, working/likely working, complete or near-complete
+- amber: fair condition — visible wear, untested, missing accessories, or known fault visible in image
+- red: poor condition — significant damage, clearly non-working, heavily incomplete, or restoration needed
+
 Format response as JSON:
 {
   "title": "Specific identification",
   "description": "Detailed expert analysis with AMAZON_SEARCH line at end",
-  "price": "£XX - £XXX"
+  "price": "£XX - £XXX",
+  "condition": "green",
+  "condition_reason": "One short phrase — e.g. Clean example, label intact, no visible damage"
 }`;
 
     const barryPrompt = `You are BOOT SALE BARRY, the legendary retro expert who has been doing car boot sales since 1984. You're 58, from Kidderminster in the West Midlands, and you know the value of every piece of retro gaming, vintage computing, and classic toy ever made.
@@ -261,7 +268,9 @@ FORMAT as JSON:
           body: JSON.stringify({
             title: parsed.title || 'Item Identified',
             description: parsed.description || text,
-            price: parsed.price || null
+            price: parsed.price || null,
+            condition: parsed.condition || null,
+            condition_reason: parsed.condition_reason || null
           })
         };
       } catch (e) {
