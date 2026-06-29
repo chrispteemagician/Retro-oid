@@ -92,6 +92,16 @@ RETRO MEDIA:
 - Comics: 2000 AD, Beano, Dandy, Tiger, Roy of the Rovers, Look-in
 - Vintage TV tie-in toys and merchandise
 
+BACKWARD COMPATIBILITY (always mention when relevant to collector value):
+- Xbox 360 games: large library backward compatible with Xbox One and Xbox Series X/S — playable today without original hardware, which keeps demand alive but suppresses scarcity value for common titles
+- Xbox Original (2001) games: select titles work on Xbox 360; even fewer on Xbox One/Series via backward compatibility
+- PS3: NOT backward compatible with PS4 or PS5 (except via PS Now/PS Plus streaming) — physical PS3 discs require original PS3 hardware, which increases hardware demand
+- PS2/PS1: some PS3 fat models play PS2 discs (CECHL/early launch); PS5 does not play PS3/PS2/PS1 discs
+- Wii: Wii U plays Wii discs (backward compatible); Wii plays GameCube discs (early models only)
+- GameCube: playable on early Wii models; not on Wii U
+- Nintendo DS: playable on 3DS; GBA carts NOT playable on DS Lite slot 2 is GBA-compatible
+- When a title is backward compatible with current hardware, note it as it affects who will buy it and why
+
 KNOWLEDGE BASE:
 - Market values in GBP (boxed vs unboxed, working vs untested, PAL vs NTSC)
 - Region variations and rarity (UK vs US vs Japanese releases)
