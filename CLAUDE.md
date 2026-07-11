@@ -163,6 +163,15 @@ Before every push: `git pull` first.
 
 ## Session History
 
+### 2026-07-11 — claude-sonnet-5 (Splice)
+- Fixed a real bug Chris hit live: photograph the case → Barry asks to see the disc (condition affects value) → taking that follow-up photo lost all context and came back vague ("looks like an Xbox 360 disc, can't tell what it is")
+- Root cause: Barry's Verdict prompt never had `needs_photo`/`photo_prompt` in its JSON schema at all — only RETRO-OID's identify mode did. Barry's ask was just prose, so the only button on screen was "Try another item" — a full reset with no memory of the first photo
+- Added `needs_photo`/`photo_prompt` to the Barry prompt schema so this now routes through the existing needs-more-photo choice screen consistently across both modes
+- "Let me get a better photo" no longer calls `resetIdentify()` — new `getBetterPhoto()` stashes the first photo (`lastSentImage`) + prior verdict as `followUpContext`, opens the camera/picker immediately (`fileInput.click()`), no blank-screen step
+- `analyze-image.js` now accepts `previousImage`/`previousContext` — when present, both images go to Gemini in one request, explicitly framed as the same item, so the second photo adds detail instead of starting from zero
+- Branch: `claude/desk-refresh-page-reload-2xml1b`, merged straight to `main` (`c17a634`) on request
+- Session named Splice — two photos of the same item, spliced into one verdict instead of severed into two
+
 ### 2026-06-29 — claude-sonnet-4-6 (Signal)
 - Playability traffic lights: 🟢 Plays today / 🟡 Another way / 🔴 Needs original kit
 - Backward compatibility matrix in Gemini prompt: Xbox 360→Series X/One (green), PS3→red, Wii→Wii U (green), GBA→DS Lite/3DS (amber), etc.
