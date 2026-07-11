@@ -419,12 +419,12 @@
             <div class="needs-photo-card mb-4" style="text-align:center;">
                 <div style="font-size:2.5rem;margin-bottom:12px;">📸</div>
                 <p id="photoPromptText" class="font-bold text-white text-base leading-snug mb-1"></p>
-                <p class="text-purple-300 text-sm mb-6">Or go with what I've got — your call.</p>
+                <p class="text-purple-300 text-sm mb-6">Tap below and I'll open your camera straight away — I'll remember this photo too.</p>
                 <div style="display:flex;flex-direction:column;gap:12px;">
                     <button onclick="continueWithPhoto()" class="choice-btn choice-btn-primary">
                         🎯 Give me your verdict now
                     </button>
-                    <button onclick="resetIdentify()" class="choice-btn choice-btn-secondary">
+                    <button onclick="getBetterPhoto()" class="choice-btn choice-btn-secondary">
                         📷 Let me get a better photo
                     </button>
                 </div>
@@ -713,6 +713,8 @@ function setMode(mode) {
 // ─── Image handling ───────────────────────────────────────────────────────────
 let imageData = null;
 let pendingResult = null;
+let lastSentImage = null;
+let followUpContext = null;
 
 document.getElementById('fileInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
@@ -788,11 +790,19 @@ async function analyseImage() {
     try {
         const compressed = await compressImage(imageData);
 
+        const body = { image: compressed, mode: currentMode };
+        if (followUpContext) {
+            body.previousImage = followUpContext.image;
+            body.previousContext = `Earlier photo was identified as: "${followUpContext.priorTitle}". ${followUpContext.priorDescription || ''} A follow-up photo was requested because: ${followUpContext.prompt || 'more detail was needed'}.`;
+        }
+
         const res = await fetch('/.netlify/functions/analyze-image', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: compressed, mode: currentMode })
+            body: JSON.stringify(body)
         });
+        lastSentImage = compressed;
+        followUpContext = null;
 
         const data = await res.json();
         clearInterval(msgInterval);
@@ -881,9 +891,31 @@ function continueWithPhoto() {
     pendingResult = null;
 }
 
+// Keeps the first photo as context instead of throwing it away, then opens
+// the camera/picker immediately so there's no confusing blank-screen step.
+function getBetterPhoto() {
+    if (!pendingResult || !lastSentImage) { resetIdentify(); return; }
+    followUpContext = {
+        image: lastSentImage,
+        priorTitle: pendingResult.title,
+        priorDescription: pendingResult.description,
+        prompt: pendingResult.photo_prompt
+    };
+    pendingResult = null;
+    imageData = null;
+    document.getElementById('needsPhotoSection').classList.add('hidden');
+    document.getElementById('previewContainer').classList.add('hidden');
+    document.getElementById('uploadPrompt').classList.remove('hidden');
+    document.getElementById('analyseBtn').classList.add('hidden');
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileInput').click();
+}
+
 function resetIdentify() {
     imageData = null;
     pendingResult = null;
+    lastSentImage = null;
+    followUpContext = null;
     document.getElementById('resultSection').classList.add('hidden');
     document.getElementById('needsPhotoSection').classList.add('hidden');
     document.getElementById('previewContainer').classList.add('hidden');
