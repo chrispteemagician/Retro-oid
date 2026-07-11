@@ -24,7 +24,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { image, mode = 'identify' } = JSON.parse(event.body);
+    const { image, mode = 'identify', previousImage, previousContext } = JSON.parse(event.body);
 
     if (!image) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'No image provided' }) };
@@ -196,11 +196,19 @@ YOUR RULES (NON-NEGOTIABLE):
 6. Never be cruel. Some of this stuff is people's childhoods.
 7. Plain text. No lists. No bullet points. Just Barry talking.
 
+WHEN YOU CANNOT VALUE IT PROPERLY FROM THIS PHOTO ALONE — return needs_photo: true:
+- If it's just the box/case and you can't see the disc, cartridge or label to judge condition
+- If you can see the format but not enough to give a real verdict on value
+- Be specific in photo_prompt: tell them exactly what to show you next ("Let's see the disc, bab — scratches change the price" / "Get us a look at the cartridge label")
+- Still give your best-guess verdict either way — never leave title/description empty
+
 FORMAT as JSON:
 {
   "title": "Barry's name for it",
   "description": "Barry's verdict — value, condition note, market context, one classic Barry-ism",
-  "price": "Barry's asking price / what he'd pay"
+  "price": "Barry's asking price / what he'd pay",
+  "needs_photo": false,
+  "photo_prompt": null
 }`;
 
     const systemPrompt = mode === 'barry' ? barryPrompt : identifyPrompt;
@@ -212,6 +220,19 @@ FORMAT as JSON:
     const { cleaned: cleanImage } = stripExifFromJpeg(rawImage);
     const securedPrompt = buildSecureSystemPrompt(systemPrompt);
 
+    const parts = [];
+    if (previousImage) {
+      const prevMimeMatch = previousImage.match(/^data:(image\/[\w+.-]+);base64,/);
+      const prevMimeType = prevMimeMatch ? prevMimeMatch[1] : 'image/jpeg';
+      const prevRaw = previousImage.replace(/^data:image\/[\w+.-]+;base64,/, '');
+      const { cleaned: prevClean } = stripExifFromJpeg(prevRaw);
+      parts.push({ text: `This is a follow-up photo of the SAME item as an earlier photo. ${previousContext || 'Combine both photos into one identification and verdict — do not treat this as a new, unrelated item.'} First photo:` });
+      parts.push({ inline_data: { mime_type: prevMimeType, data: prevClean } });
+      parts.push({ text: 'Follow-up photo (what was asked for):' });
+    }
+    parts.push({ text: mode === 'barry' ? "Give Barry's verdict on this item." : 'Identify this retro item.' });
+    parts.push({ inline_data: { mime_type: mimeType, data: cleanImage } });
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
@@ -222,12 +243,7 @@ FORMAT as JSON:
         },
         body: JSON.stringify({
           system_instruction: { parts: [{ text: securedPrompt }] },
-          contents: [{
-            parts: [
-              { text: mode === 'barry' ? "Give Barry's verdict on this item." : 'Identify this retro item.' },
-              { inline_data: { mime_type: mimeType, data: cleanImage } }
-            ]
-          }],
+          contents: [{ parts }],
           generationConfig: {
             temperature: mode === 'barry' ? 0.9 : 0.7,
             topK: 40,
