@@ -109,6 +109,35 @@ Same as all -Oids:
 
 ---
 
+## Free-to-use philosophy (Chris, 2026-07-13 — read before adding any gate)
+
+RETRO-OID identification and Boot Sale Barry (both verdict mode and chat) are
+free for everyone, no sign-in, no lock icon, no "Villager+ only" banner.
+There was never a hard `isPro` gate on either — `analyze-image.js` and
+`chat-barry.js` have no tier checks, and `patreon-auth.js` only ever gets
+called from the Village tab's "Already a member?" login, not from the
+identify/chat flow. Don't gate the tool itself behind Patreon.
+
+**What Patreon is for here:** the Village — a hosted member directory listing,
+guest passes, the monthly prize draw, and (Founder) a hosted Hamlet page + QR.
+Those cost Chris real ongoing hosting/upkeep to exist as public pages/records,
+so they stay behind membership. Frame it honestly (the Village card already
+does this well: "This is coffeeware. Pay what you can, when you can. Can't
+right now? Use it anyway — then tell one person.") — never as a shame-lock
+("🔒 ... Founders only ... Unlock →").
+
+**The ask:** one honest, low-key honesty-box message shown once, under the
+identify/Barry result card after the tool has already done its job — free to
+use, tell a mate if it helped, one-off [buy me a coffee](https://buymeacoffee.com/chrispteemagician)
+if you want to say thanks, [Patreon](https://www.patreon.com/chrisptee) if you
+want to be a regular. Not a gate. Not gamified.
+
+This same pattern is rolling out across the rest of the -oid ecosystem — check
+other repos' CLAUDE.md for the shared version before assuming this file is the
+only place it applies.
+
+---
+
 ## Membership Tiers (Patreon — chrisptee campaign)
 
 | Tier | Price | Pence threshold |
