@@ -13,6 +13,32 @@ Part of the FeelFamous -Oid Ecosystem.
 
 ---
 
+## Voice & Tone — read before writing any outward-facing copy
+
+*Chris, 2026-07-21, live conversation.* He's an entertainer by instinct and
+amplifies to make things interesting, but "anti-establishment"/us-vs-them
+framing doesn't land — even people who'd agree with the substance get
+defensive when copy sounds like it's recruiting them into a side. His own
+words: *"I have to be the surfer, the skateboarder that skates in between
+everybody and doesn't crash into anything."*
+
+**The rule:** state the plain fact once, let it carry the weight. No cast
+villain (dealers, "the industry"), no combat verbs (fight, arm yourself,
+disrupt), no word bigger than what's true (domination, extraction,
+manifesto, revolution). If a sentence needs a caricature to land, it hasn't
+landed — cut it back to the fact.
+
+**Applied 2026-07-21 (ecosystem-wide pass, same as motor-oid/cannabin-oid):**
+this repo was almost clean already. One edit — index.html's About card,
+"AuDHD, anti-extraction, world domination through kindness" → "AuDHD, just
+trying to be useful" ("anti-extraction" was redundant with the plain facts
+in the next sentence: "Every -Oid is free. No paywalls on the tools").
+This CLAUDE.md's own positioning language had none of the patterns.
+Character voices (Boot Sale Barry, RETRO-OID) and playability traffic-light
+copy are features, not marketing copy — deliberately untouched.
+
+---
+
 ## The Characters
 
 **RETRO-OID** — the AI image analyser. Expert mode. Encyclopaedic. Identifies make/model/year/variant/value.
